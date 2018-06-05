@@ -48,7 +48,13 @@ class DQNAgent:
         self.memory.append((state, pred_prices, next_state, done))
    
     def act(self, state, train = True):
-
+        if np.random.rand() <= self.epsilon and train:
+            pred = []
+            for i in range(self.predict_size):
+                pred.append(random.uniform(0.900000,1.8000000))
+            pred = np.array(pred)
+            return [pred]
+                
         act_values = self.model.predict(state)
         return act_values #return action 
     
