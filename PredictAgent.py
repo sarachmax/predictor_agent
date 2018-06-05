@@ -81,7 +81,7 @@ class DQNAgent:
         pred_trend = pred - last_price
         err_trend = abs(real-trend - pred_trend)/abs(real_trend)
         if pred_trend*real_trend > 0 :
-            reward = 1-err
+            reward = 1-err_trend  
         else : 
-            reward = -(1-err)
+            reward = -(1-err_trend)
         return reward * 100
