@@ -54,7 +54,7 @@ class DQNAgent:
     
     def replay(self, batch_size):
         minibatch = random.sample(self.memory, batch_size)
-        
+
         if not done : 
             for state, pred_prices, next_state, done in minibatch:
                 target = self.model.predict(state)
@@ -62,7 +62,7 @@ class DQNAgent:
                 for i in range(self.predict_size,1):
                     fut_price = next_state[0][self.state_size-i]
                     reward = self.reward_estimator()
-                    print('day : ' i, 'accuracy : ', reward)
+                    print('day : ' , i, 'accuracy : ', reward)
                     target[0][i] = reward    
                 self.model.fit(state, target, epochs=1, verbose=0)
             
