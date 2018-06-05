@@ -50,19 +50,22 @@ class DQNAgent:
     def act(self, state, train = True):
 
         act_values = self.model.predict(state)
-        return np.argmax(act_values[0]) #return action 
+        return act_values #return action 
     
     def replay(self, batch_size):
         minibatch = random.sample(self.memory, batch_size)
 
-        if not done : 
-            for state, pred_prices, next_state, done in minibatch:
+        for state, pred_prices, next_state, done in minibatch:
+            if not done : 
                 target = self.model.predict(state)
                 curr_price = state[0][self.state_size-1]
-                for i in range(self.predict_size,1):
-                    fut_price = next_state[0][self.state_size-i]
-                    reward = self.reward_estimator()
-                    print('day : ' , i, 'accuracy : ', reward)
+                for i in range(self.predict_size):
+                    fut_price = next_state[0][self.state_size-self.predict_size+i]
+                    print('curr_price :', curr_price)
+                    print('pred_prices : ',pred_prices[0][i])
+                    print('fut_price : ', fut_price)
+                    reward = self.reward_estimator(curr_price, pred_prices[0][i], fut_price)
+                    print('day : ' , i+1, 'accuracy : ', reward)
                     target[0][i] = reward    
                 self.model.fit(state, target, epochs=1, verbose=0)
             
@@ -79,9 +82,12 @@ class DQNAgent:
         reward = 0 
         real_trend = target - last_price
         pred_trend = pred - last_price
-        err_trend = abs(real-trend - pred_trend)/abs(real_trend)
+        err_trend = abs(real_trend - pred_trend)/abs(real_trend)
         if pred_trend*real_trend > 0 :
-            reward = 1-err_trend  
+            if err_trend <= 1 : 
+                reward = 1-err_trend
+            else : 
+                reward = -(1+err_trend)
         else : 
-            reward = -(1-err_trend)
+            reward = -(1+err_trend)
         return reward * 100

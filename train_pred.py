@@ -84,7 +84,9 @@ if __name__ == "__main__":
             pred_prices = agent.act(state)
             next_state, done = env.step()
             next_state = np.reshape(next_state, (1,state_size,1))
-            agent.remember(state, pred, next_state, done)
+            agent.remember(state, pred_prices, next_state, done)
+            print('state : ', state)
+            print('pred_price :', pred_prices)
             state = next_state       
             if done:
                 agent.update_target_model()
@@ -98,8 +100,7 @@ if __name__ == "__main__":
                 agent.replay(batch_size)
             
             end_time = str(datetime.datetime.now().time())
-            
-            watch_result(e , start_time, end_time, env.train_index, end_index-start_index, env.get_action(action), reward ,env.profit)     
+             
                      
     agent.save("agent_model.h5")
                       
