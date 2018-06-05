@@ -100,8 +100,9 @@ if __name__ == "__main__":
                 agent.replay(batch_size)
             
             end_time = str(datetime.datetime.now().time())
+        agent.save("agent_model.h5")
              
                      
-    agent.save("agent_model.h5")
-                      
+    #agent.save("agent_model.h5")
+    print("************************train done**********************************************")                 
     
